@@ -1,0 +1,47 @@
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+
+sourceCompatibility = 1.8
+mainClassName = 'de.webis.httpserver.FileServer'
+version = '1'
+
+// TODO eigene Nachnamen und Matrikelnummern eintragen
+def projectMembers = ['mustermann-31231', 'musterfrau-12312']
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+task zip(type:Zip, overwrite: true) {
+    description 'Builds project zip file that follows the naming scheme ' +
+            '{surname-registrationNumber}-webtecI-blatt{version}.zip'
+
+    into('src') {
+        from fileTree(dir: 'src')
+    }
+
+    into('gradle/wrapper') {
+        from fileTree(dir: 'gradle/wrapper')
+    }
+
+
+    from 'build.gradle'
+    from 'gradlew'
+    from 'gradlew.bat'
+
+    def fileName = ''
+
+    projectMembers.each {
+        fileName += "$it-"
+    }
+
+    archiveName "${fileName}webtecI-blatt${version}.zip"
+    println "Zip archive saved to $archivePath"
+}
+
